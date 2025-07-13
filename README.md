@@ -40,7 +40,7 @@ A stunning scientific calculator with Apple Liquid Glass-inspired design, featur
 ### Installation
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/liquid-glass-calculator.git
+   git clone https://github.com/Clementabcd/Liquid-Glass-Scientific-Calculator.git
    ```
 2. Open `index.html` in your browser
 
@@ -53,7 +53,7 @@ Simply copy the HTML, CSS, and JavaScript code into a single HTML file and open 
 ```
 liquid-glass-calculator/
 ├── index.html          # Main HTML file
-├── style.css           # CSS styles (optional separate file)
+├── styles.css          # CSS styles (optional separate file)
 ├── script.js           # JavaScript functionality
 ├── assets/             # Optional assets folder
 │   ├── sounds/         # Button click sounds
