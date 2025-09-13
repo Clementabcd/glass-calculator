@@ -1,246 +1,367 @@
-document.addEventListener('DOMContentLoaded', function() {
-    // Calculator state
-    const calculator = {
-        displayValue: '0',
-        previousValue: null,
-        operation: null,
-        waitingForOperand: false,
-        currentMode: 'DEG', // DEG or RAD for trigonometric functions
-        memoryValue: null
-    };
+        class GlassCalculator {
+            constructor() {
+                this.display = document.getElementById('display');
+                this.memoryIndicator = document.getElementById('memory-indicator');
+                this.historyPanel = document.getElementById('history-panel');
+                this.historyContent = document.getElementById('history-content');
+                this.advancedButtons = document.getElementById('advanced-buttons');
+                this.simpleMemory = document.getElementById('simple-memory');
+                this.advancedModeBtn = document.getElementById('advanced-mode-btn');
+                this.historyBtn = document.getElementById('history-btn');
 
-    // DOM elements
-    const display = document.querySelector('.current-operation');
-    const previousDisplay = document.querySelector('.previous-operation');
-    const buttons = document.querySelectorAll('.calculator button');
+                this.currentValue = '0';
+                this.previousValue = null;
+                this.operation = null;
+                this.waitingForOperand = false;
+                this.memory = 0;
+                this.history = [];
+                this.isAdvancedMode = false;
+                this.showHistory = false;
 
-    // Update calculator display
-    function updateDisplay() {
-        display.textContent = calculator.displayValue;
-        
-        // Show previous operation if exists
-        if (calculator.previousValue !== null && calculator.operation) {
-            previousDisplay.textContent = `${calculator.previousValue} ${calculator.operation}`;
-        } else {
-            previousDisplay.textContent = '';
-        }
-    }
-
-    // Input digit handler
-    function inputDigit(digit) {
-        const { displayValue, waitingForOperand } = calculator;
-
-        if (waitingForOperand) {
-            calculator.displayValue = digit;
-            calculator.waitingForOperand = false;
-        } else {
-            calculator.displayValue = displayValue === '0' ? digit : displayValue + digit;
-        }
-    }
-
-    // Input decimal handler
-    function inputDecimal() {
-        if (calculator.waitingForOperand) {
-            calculator.displayValue = '0.';
-            calculator.waitingForOperand = false;
-            return;
-        }
-
-        if (!calculator.displayValue.includes('.')) {
-            calculator.displayValue += '.';
-        }
-    }
-
-    // Handle operator buttons
-    function handleOperator(nextOperator) {
-        const { displayValue, previousValue, operation } = calculator;
-        const inputValue = parseFloat(displayValue);
-
-        if (operation && calculator.waitingForOperand) {
-            calculator.operation = nextOperator;
-            return;
-        }
-
-        if (previousValue === null) {
-            calculator.previousValue = inputValue;
-        } else if (operation) {
-            const currentValue = previousValue || 0;
-            let result;
-            
-            switch (operation) {
-                case '+':
-                    result = currentValue + inputValue;
-                    break;
-                case '-':
-                    result = currentValue - inputValue;
-                    break;
-                case '×':
-                    result = currentValue * inputValue;
-                    break;
-                case '÷':
-                    result = currentValue / inputValue;
-                    break;
-                case 'xʸ':
-                    result = Math.pow(currentValue, inputValue);
-                    break;
+                this.init();
             }
 
-            calculator.displayValue = String(result);
-            calculator.previousValue = result;
-        }
+            init() {
+                // Event listeners pour les boutons
+                document.querySelectorAll('.calc-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => this.handleButtonClick(e));
+                });
 
-        calculator.waitingForOperand = true;
-        calculator.operation = nextOperator;
-    }
+                this.advancedModeBtn.addEventListener('click', () => this.toggleAdvancedMode());
+                this.historyBtn.addEventListener('click', () => this.toggleHistory());
 
-    // Handle scientific functions
-    function handleScientificFunction(func) {
-        const inputValue = parseFloat(calculator.displayValue);
-        let result;
-        
-        switch (func) {
-            case 'sin':
-                result = calculator.currentMode === 'DEG' 
-                    ? Math.sin(inputValue * Math.PI / 180) 
-                    : Math.sin(inputValue);
-                break;
-            case 'cos':
-                result = calculator.currentMode === 'DEG' 
-                    ? Math.cos(inputValue * Math.PI / 180) 
-                    : Math.cos(inputValue);
-                break;
-            case 'tan':
-                result = calculator.currentMode === 'DEG' 
-                    ? Math.tan(inputValue * Math.PI / 180) 
-                    : Math.tan(inputValue);
-                break;
-            case 'log':
-                result = Math.log10(inputValue);
-                break;
-            case 'ln':
-                result = Math.log(inputValue);
-                break;
-            case '√':
-                result = Math.sqrt(inputValue);
-                break;
-            case 'x²':
-                result = Math.pow(inputValue, 2);
-                break;
-            case 'π':
-                result = Math.PI;
-                break;
-            case 'ANS':
-                if (calculator.memoryValue !== null) {
-                    result = calculator.memoryValue;
+                // Event listener pour le clavier
+                document.addEventListener('keydown', (e) => this.handleKeyPress(e));
+
+                this.updateDisplay();
+                this.updateMemoryIndicator();
+            }
+
+            handleButtonClick(e) {
+                const action = e.target.dataset.action;
+                const value = e.target.dataset.value;
+
+                switch (action) {
+                    case 'number':
+                        this.inputNumber(value);
+                        break;
+                    case 'decimal':
+                        this.inputDecimal();
+                        break;
+                    case 'operation':
+                        this.performOperation(value);
+                        break;
+                    case 'clear':
+                        this.clear();
+                        break;
+                    case 'clear-entry':
+                        this.clearEntry();
+                        break;
+                    case 'percentage':
+                        this.percentage();
+                        break;
+                    case 'toggle-sign':
+                        this.toggleSign();
+                        break;
+                    case 'memory':
+                        this.handleMemory(value);
+                        break;
+                    case 'advanced':
+                        this.performAdvancedOperation(value);
+                        break;
                 }
-                break;
-        }
+            }
 
-        if (result !== undefined) {
-            calculator.displayValue = String(result);
-            calculator.waitingForOperand = true;
-        }
-    }
-
-    // Handle special operations
-    function handleSpecialOperation(op) {
-        switch (op) {
-            case 'AC':
-                // All clear
-                calculator.displayValue = '0';
-                calculator.previousValue = null;
-                calculator.operation = null;
-                calculator.waitingForOperand = false;
-                break;
-            case 'DEL':
-                // Delete last character
-                if (calculator.displayValue.length === 1 || 
-                    (calculator.displayValue.length === 2 && calculator.displayValue.startsWith('-'))) {
-                    calculator.displayValue = '0';
+            inputNumber(num) {
+                if (this.waitingForOperand) {
+                    this.currentValue = num;
+                    this.waitingForOperand = false;
                 } else {
-                    calculator.displayValue = calculator.displayValue.slice(0, -1);
+                    this.currentValue = this.currentValue === '0' ? num : this.currentValue + num;
                 }
-                break;
-            case 'RAD':
-                // Switch to radians mode
-                calculator.currentMode = 'RAD';
-                break;
-            case 'DEG':
-                // Switch to degrees mode
-                calculator.currentMode = 'DEG';
-                break;
-            case '=':
-                // Perform calculation
-                if (calculator.operation && calculator.previousValue !== null) {
-                    handleOperator('=');
-                    calculator.memoryValue = parseFloat(calculator.displayValue);
-                    calculator.operation = null;
-                    calculator.previousValue = null;
+                this.updateDisplay();
+            }
+
+            inputDecimal() {
+                if (this.waitingForOperand) {
+                    this.currentValue = '0.';
+                    this.waitingForOperand = false;
+                } else if (this.currentValue.indexOf('.') === -1) {
+                    this.currentValue += '.';
                 }
-                break;
-            case '(':
-            case ')':
-                // Parentheses (for future expansion)
-                break;
+                this.updateDisplay();
+            }
+
+            clear() {
+                this.currentValue = '0';
+                this.previousValue = null;
+                this.operation = null;
+                this.waitingForOperand = false;
+                this.updateDisplay();
+            }
+
+            clearEntry() {
+                this.currentValue = '0';
+                this.updateDisplay();
+            }
+
+            performOperation(nextOperation) {
+                const inputValue = parseFloat(this.currentValue);
+
+                if (this.previousValue === null) {
+                    this.previousValue = inputValue;
+                } else if (this.operation) {
+                    const currentValue = this.previousValue || 0;
+                    const newValue = this.calculate(currentValue, inputValue, this.operation);
+
+                    const historyEntry = `${currentValue} ${this.operation} ${inputValue} = ${newValue}`;
+                    this.addToHistory(historyEntry);
+
+                    this.currentValue = String(newValue);
+                    this.previousValue = newValue;
+                }
+
+                this.waitingForOperand = true;
+                this.operation = nextOperation;
+                this.updateDisplay();
+            }
+
+            calculate(firstValue, secondValue, operation) {
+                switch (operation) {
+                    case '+': return firstValue + secondValue;
+                    case '-': return firstValue - secondValue;
+                    case '×': return firstValue * secondValue;
+                    case '÷': return secondValue !== 0 ? firstValue / secondValue : 0;
+                    case '=': return secondValue;
+                    default: return secondValue;
+                }
+            }
+
+            performAdvancedOperation(op) {
+                const value = parseFloat(this.currentValue);
+                let result;
+
+                switch (op) {
+                    case 'sin': result = Math.sin(value * Math.PI / 180); break;
+                    case 'cos': result = Math.cos(value * Math.PI / 180); break;
+                    case 'tan': result = Math.tan(value * Math.PI / 180); break;
+                    case 'log': result = Math.log10(value); break;
+                    case 'ln': result = Math.log(value); break;
+                    case 'sqrt': result = Math.sqrt(value); break;
+                    case 'x²': result = Math.pow(value, 2); break;
+                    case 'x³': result = Math.pow(value, 3); break;
+                    case '1/x': result = 1 / value; break;
+                    case '!': result = this.factorial(value); break;
+                    case 'π': result = Math.PI; break;
+                    case 'e': result = Math.E; break;
+                    default: return;
+                }
+
+                const historyEntry = `${op}(${value}) = ${result}`;
+                this.addToHistory(historyEntry);
+
+                this.currentValue = String(result);
+                this.waitingForOperand = true;
+                this.updateDisplay();
+            }
+
+            factorial(n) {
+                if (n < 0 || n !== Math.floor(n)) return NaN;
+                if (n === 0 || n === 1) return 1;
+                let result = 1;
+                for (let i = 2; i <= n; i++) {
+                    result *= i;
+                }
+                return result;
+            }
+
+            percentage() {
+                const value = parseFloat(this.currentValue);
+                this.currentValue = String(value / 100);
+                this.updateDisplay();
+            }
+
+            toggleSign() {
+                if (this.currentValue !== '0') {
+                    this.currentValue = this.currentValue.startsWith('-') 
+                        ? this.currentValue.slice(1) 
+                        : '-' + this.currentValue;
+                    this.updateDisplay();
+                }
+            }
+
+            handleMemory(action) {
+                const value = parseFloat(this.currentValue);
+                
+                switch (action) {
+                    case 'M+':
+                        this.memory += value;
+                        break;
+                    case 'M-':
+                        this.memory -= value;
+                        break;
+                    case 'MR':
+                        this.currentValue = String(this.memory);
+                        this.waitingForOperand = true;
+                        this.updateDisplay();
+                        break;
+                    case 'MC':
+                        this.memory = 0;
+                        break;
+                }
+                this.updateMemoryIndicator();
+            }
+
+            handleKeyPress(e) {
+                const { key } = e;
+
+                if (key >= '0' && key <= '9') {
+                    this.inputNumber(key);
+                } else if (key === '.') {
+                    this.inputDecimal();
+                } else if (key === '+') {
+                    this.performOperation('+');
+                } else if (key === '-') {
+                    this.performOperation('-');
+                } else if (key === '*') {
+                    this.performOperation('×');
+                } else if (key === '/') {
+                    e.preventDefault();
+                    this.performOperation('÷');
+                } else if (key === 'Enter' || key === '=') {
+                    this.performOperation('=');
+                } else if (key === 'Escape') {
+                    this.clear();
+                } else if (key === 'Backspace') {
+                    if (this.currentValue.length > 1) {
+                        this.currentValue = this.currentValue.slice(0, -1);
+                    } else {
+                        this.currentValue = '0';
+                    }
+                    this.updateDisplay();
+                } else if (key === '%') {
+                    this.percentage();
+                }
+            }
+
+            updateDisplay() {
+                this.display.textContent = this.currentValue;
+            }
+
+            updateMemoryIndicator() {
+                if (this.memory !== 0) {
+                    this.memoryIndicator.textContent = `M: ${this.memory}`;
+                    this.memoryIndicator.classList.remove('hidden');
+                    if (!this.isAdvancedMode) {
+                        this.simpleMemory.classList.remove('hidden');
+                    }
+                } else {
+                    this.memoryIndicator.classList.add('hidden');
+                    if (!this.isAdvancedMode) {
+                        this.simpleMemory.classList.add('hidden');
+                    }
+                }
+            }
+
+            addToHistory(entry) {
+                this.history.unshift(entry);
+                if (this.history.length > 20) {
+                    this.history.pop();
+                }
+                this.updateHistoryDisplay();
+            }
+
+            updateHistoryDisplay() {
+                if (this.history.length === 0) {
+                    this.historyContent.innerHTML = '<div class="text-white/50">Aucun historique</div>';
+                } else {
+                    this.historyContent.innerHTML = this.history
+                        .map(entry => `<div class="text-white/70">${entry}</div>`)
+                        .join('');
+                }
+            }
+
+            toggleAdvancedMode() {
+                this.isAdvancedMode = !this.isAdvancedMode;
+                this.advancedModeBtn.textContent = this.isAdvancedMode ? 'Simple' : 'Avancé';
+                
+                if (this.isAdvancedMode) {
+                    this.advancedButtons.classList.remove('hidden');
+                    this.simpleMemory.classList.add('hidden');
+                } else {
+                    this.advancedButtons.classList.add('hidden');
+                    if (this.memory !== 0) {
+                        this.simpleMemory.classList.remove('hidden');
+                    }
+                }
+            }
+
+            toggleHistory() {
+                this.showHistory = !this.showHistory;
+                if (this.showHistory) {
+                    this.historyPanel.classList.remove('hidden');
+                } else {
+                    this.historyPanel.classList.add('hidden');
+                }
+            }
         }
-    }
 
-    // Button click handler
-    function handleButtonClick(event) {
-        const { target } = event;
-        const value = target.textContent;
+        // Initialiser la calculatrice quand la page est chargée
+        document.addEventListener('DOMContentLoaded', () => {
+            new GlassCalculator();
+        });
 
-        // Play subtle click sound (optional)
-        // new Audio('click.wav').play().catch(e => {});
+        // --- Gestion des arrière-plans dynamiques ---
+        document.addEventListener("DOMContentLoaded", () => {
+            const bgContainer = document.getElementById("background-image");
 
-        // Add click animation
-        target.classList.add('active');
-        setTimeout(() => target.classList.remove('active'), 100);
+            const backgrounds = [
+                "https://images.unsplash.com/photo-1518837695005-2083093ee35b?auto=format&fit=crop&w=2070&q=80",
+                "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=2070&q=80",
+                "https://images.unsplash.com/photo-1470770903676-69b98201ea1c?auto=format&fit=crop&w=2070&q=80",
+                "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=2070&q=80",
+                "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=2070&q=80",
+                "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=2070&q=80"
+            ];
 
-        // Handle different button types
-        if (target.classList.contains('function-btn')) {
-            handleScientificFunction(value);
-        } else if (target.classList.contains('operator-btn')) {
-            handleOperator(value);
-        } else if (target.classList.contains('equals-btn')) {
-            handleSpecialOperation('=');
-        } else if (value === '.') {
-            inputDecimal();
-        } else if (['AC', 'DEL', 'RAD', 'DEG', 'ANS', '(', ')'].includes(value)) {
-            handleSpecialOperation(value);
-        } else if (!isNaN(value)) {
-            inputDigit(value);
-        }
+            let currentIndex = 0;
 
-        updateDisplay();
-    }
+            // Création de 2 calques pour le fondu enchaîné
+            const img1 = document.createElement("div");
+            const img2 = document.createElement("div");
+            [img1, img2].forEach(img => {
+                img.className = "absolute inset-0 bg-cover bg-center bg-no-repeat opacity-0 bg-zoom";
+                bgContainer.appendChild(img);
+            });
 
-    // Keyboard support
-    document.addEventListener('keydown', function(event) {
-        const key = event.key;
-        
-        // Map keyboard keys to calculator functions
-        const keyMap = {
-            '0': '0', '1': '1', '2': '2', '3': '3', '4': '4',
-            '5': '5', '6': '6', '7': '7', '8': '8', '9': '9',
-            '.': '.', '+': '+', '-': '-', '*': '×', '/': '÷',
-            'Enter': '=', '=': '=', 'Backspace': 'DEL', 'Escape': 'AC',
-            'p': 'π', 's': 'sin', 'c': 'cos', 't': 'tan',
-            'l': 'log', 'n': 'ln', 'r': '√', '^': 'xʸ', '²': 'x²'
-        };
+            let active = img1;
+            let next = img2;
 
-        if (key in keyMap) {
-            event.preventDefault();
-            const button = Array.from(buttons).find(btn => btn.textContent === keyMap[key]);
-            if (button) button.click();
-        }
-    });
+            function changeBackground() {
+                // Choisir une image aléatoire différente de la précédente
+                let nextIndex;
+                do {
+                    nextIndex = Math.floor(Math.random() * backgrounds.length);
+                } while (nextIndex === currentIndex);
+                currentIndex = nextIndex;
 
-    // Add event listeners to all buttons
-    buttons.forEach(button => {
-        button.addEventListener('click', handleButtonClick);
-    });
+                next.style.backgroundImage = `url(${backgrounds[currentIndex]})`;
 
-    // Initialize display
-    updateDisplay();
-});
+                // Animation
+                active.classList.remove("active");
+                active.classList.add("inactive");
+
+                next.classList.remove("inactive");
+                next.classList.add("active");
+
+                // Swap des calques
+                [active, next] = [next, active];
+            }
+
+            // Initialisation
+            img1.style.backgroundImage = `url(${backgrounds[0]})`;
+            img1.classList.add("active");
+
+            // Changement toutes les 12 secondes
+            setInterval(changeBackground, 12000);
+        });

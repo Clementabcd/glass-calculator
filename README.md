@@ -1,139 +1,127 @@
-# Liquid Glass Scientific Calculator 🌊🔮
+# 🌌 Glass Calculator
 
-![Calculator Preview](preview.jpeg)
+![Calculator Screenshot](./screenshots/calculator_screenshot.jpeg)
 
-A stunning scientific calculator with Apple Liquid Glass-inspired design, featuring advanced mathematical functions, smooth animations, and a beautiful translucent interface.
-
-## ✨ Features
-
-### 🎨 Stunning UI Design
-- **Liquid Glass aesthetic** with blur effects and transparency
-- **Dynamic gradient backgrounds** that shift subtly
-- **Smooth animations** for button presses and transitions
-- **Responsive layout** that works on all device sizes
-
-### ➕ Basic Operations
-- All standard calculator functions (+, -, ×, ÷)
-- Decimal point input
-- Clear (AC) and delete (DEL) functions
-- Parentheses support for complex expressions
-
-### 🔬 Scientific Functions
-- **Trigonometric functions**: sin, cos, tan (DEG/RAD modes)
-- **Logarithmic functions**: log (base 10), ln (natural log)
-- **Exponents and roots**: x², xʸ, √
-- **Constants**: π (pi)
-- **Memory function**: ANS (recall last result)
-
-### ⌨️ Enhanced Usability
-- **Full keyboard support** (type calculations directly)
-- **Previous operation display**
-- **Visual feedback** on button presses
-- **Optional sound effects** (uncomment in code to enable)
-
-## 🚀 Getting Started
-
-### Prerequisites
-- Modern web browser (Chrome, Firefox, Safari, Edge)
-- (Optional) Local web server for development
-
-### Installation
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/Clementabcd/Liquid-Glass-Scientific-Calculator.git
-   ```
-2. Open `index.html` in your browser
-
-### Alternative: Use Without Installation
-Simply copy the HTML, CSS, and JavaScript code into a single HTML file and open it in your browser.
-
-## 🛠️ Development
-
-### File Structure
-```
-liquid-glass-calculator/
-├── index.html          # Main HTML file
-├── styles.css          # CSS styles (optional separate file)
-├── script.js           # JavaScript functionality
-├── assets/             # Optional assets folder
-│   ├── sounds/         # Button click sounds
-│   └── images/         # Background images
-└── README.md           # This file
-```
-
-### Customization Options
-1. **Change color scheme**:
-   Modify the CSS variables in `:root`:
-   ```css
-   :root {
-     --primary-color: rgba(10, 132, 255, 0.7); /* Blue */
-     --secondary-color: rgba(94, 92, 230, 0.7); /* Purple */
-   }
-   ```
-
-2. **Add background image**:
-   Replace the background URL in the CSS:
-   ```css
-   body {
-     background: url('your-image.jpg') no-repeat center center fixed;
-   }
-   ```
-
-3. **Enable sound effects**:
-   Uncomment the audio line in the JavaScript:
-   ```javascript
-   // new Audio('click.wav').play().catch(e => {});
-   ```
-
-## 🌟 Advanced Features to Implement
-
-Want to contribute? Here are some great enhancements:
-
-1. **Graphing capabilities** - Visualize mathematical functions
-2. **Unit conversions** - Length, weight, temperature, etc.
-3. **Equation solver** - Solve for variables
-4. **History panel** - View past calculations
-5. **Theme selector** - Multiple color schemes
-6. **Mobile app version** - iOS/Android ports
-
-## 📚 How It Works
-
-### Technical Architecture
-- **HTML5**: Structure of the calculator
-- **CSS3**: Styling with modern features like `backdrop-filter`
-- **JavaScript**: All calculation logic and interactivity
-
-### Key Algorithms
-1. **Shunting-yard algorithm** (for operator precedence)
-2. **Trigonometric calculations** with DEG/RAD conversion
-3. **Memory management** for ANS functionality
-4. **Input validation** to prevent invalid expressions
-
-## 📱 Responsive Design
-
-The calculator automatically adapts to:
-- Desktop screens
-- Tablets
-- Mobile phones
-- Different aspect ratios
-
-## 🎨 Design Philosophy
-
-1. **Skeuomorphic** - Mimics real glass materials
-2. **Neumorphic** - Soft shadows and highlights
-3. **Minimalist** - Only essential UI elements
-4. **Accessible** - Good contrast and large touch targets
-
-## 📜 License
-
-MIT License - Free for personal and commercial use
-
-## 🙏 Acknowledgments
-
-- Inspired by Apple's Liquid design language
-- Calculator logic based on standard scientific calculators
-- Glass morphism design trend
+An advanced **glassmorphism-style calculator** built with **HTML, CSS (TailwindCSS), and JavaScript**.  
+Designed with a sleek *liquid glass UI*, dynamic animated backgrounds, and both **basic** and **scientific** calculator features.  
 
 ---
 
-Enjoy using this beautiful calculator! For issues or feature requests, please open an issue on GitHub.
+## ✨ Features
+
+### 🎨 Design & UI
+- **Glassmorphism aesthetic** with blur, transparency, and smooth shadows.
+- **Dynamic animated backgrounds**:
+  - 6 high-quality Unsplash backgrounds.
+  - Random order transitions with fade + zoom-in effect (Ken Burns style).
+- **Responsive design** – works seamlessly on desktop and mobile.
+- **Smooth button interactions** with hover and press animations.
+
+### 🧮 Calculator Modes
+- **Basic Mode**:
+  - Numbers `0–9`
+  - Decimal point `.`
+  - Arithmetic operations: `+`, `−`, `×`, `÷`
+  - Percentage `%`
+  - Sign toggle `±`
+  - Clear `C` / Clear Entry `CE`
+  - Memory support: `M+`, `M-`, `MR`, `MC`
+- **Advanced Mode** (Scientific):
+  - Trigonometry: `sin`, `cos`, `tan` (degree mode)
+  - Logarithms: `log` (base 10), `ln` (natural log)
+  - Square root `√x`
+  - Powers: `x²`, `x³`
+  - Reciprocal `1/x`
+  - Factorial `x!`
+  - Constants: `π`, `e`
+
+### 📜 History
+- Keeps a **calculation history** (up to 20 entries).
+- Easily toggle history panel with a button.
+- Clear visual separation of past calculations.
+
+### ⌨️ Keyboard Support
+- Full keyboard integration:
+  - Numbers: `0–9`
+  - Operations: `+`, `-`, `*`, `/`
+  - Equals: `Enter` or `=`
+  - Clear: `Escape`
+  - Backspace support
+  - Percentage: `%`
+- Works seamlessly with both **mouse** and **keyboard**.
+
+### ⚡ Performance
+- Lightweight, no dependencies except **TailwindCSS**.
+- No external calculator libraries – everything coded in pure JavaScript.
+- Optimized transitions and background animations.
+
+---
+
+## 🚀 Installation & Usage
+
+1. Clone this repository:
+   ```bash
+   git clone https://github.com/your-username/glass-calculator.git
+```
+
+2. Navigate to the project folder:
+
+   ```bash
+   cd glass-calculator
+   ```
+
+3. Open `glass-calculator-html.html` in your browser:
+
+   ```bash
+   open glass-calculator-html.html   # macOS
+   start glass-calculator-html.html  # Windows
+   xdg-open glass-calculator-html.html  # Linux
+   ```
+
+✅ That’s it – no server required!
+
+---
+
+## 📸 Screenshots
+
+![Screenshot 1](./screenshots/img_1.jpeg)
+![Screenshot 2](./screenshots/img_2.jpeg)
+
+---
+
+## 🛠️ Built With
+
+* **HTML5**
+* **CSS3 / TailwindCSS**
+* **JavaScript (Vanilla)**
+
+---
+
+## 📌 Roadmap / Possible Improvements
+
+* [ ] Dark mode toggle.
+* [ ] Configurable background sets.
+* [ ] Support for radians in trigonometric functions.
+* [ ] PWA support (installable calculator app).
+* [ ] Unit conversions (length, weight, temperature).
+* [ ] Voice input.
+
+---
+
+## 🤝 Contributing
+
+Contributions, issues, and feature requests are welcome!
+Feel free to fork this repo and submit a pull request.
+
+---
+
+## 📜 License
+
+This project is licensed under the **MIT License** – see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 💡 Inspiration
+
+Inspired by modern **glassmorphism UI** trends and the desire to merge **beauty + functionality** into a calculator app.
+

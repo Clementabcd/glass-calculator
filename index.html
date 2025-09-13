@@ -1,66 +1,115 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Liquid Glass Calculator</title>
+    <title>Calculatrice Verre Liquide</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" type="text/css" href="styles.css">
+
 </head>
 <body>
-    <div class="calculator">
-        <div class="display">
-            <div class="previous-operation"></div>
-            <div class="current-operation">0</div>
+    <div class="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 p-4 flex items-center justify-center relative overflow-hidden">
+        <!-- Image d'arrière-plan -->
+        <div id="background-image" class="fixed inset-0 bg-cover bg-center bg-no-repeat opacity-80 z-0">
         </div>
-        <div class="buttons-grid">
-            <button class="function-btn">sin</button>
-            <button class="function-btn">cos</button>
-            <button class="function-btn">tan</button>
-            <button class="operator-btn">÷</button>
-            
-            <button class="function-btn">log</button>
-            <button class="function-btn">ln</button>
-            <button class="function-btn">√</button>
-            <button class="operator-btn">×</button>
-            
-            <button class="function-btn">x²</button>
-            <button class="function-btn">xʸ</button>
-            <button class="function-btn">π</button>
-            <button class="operator-btn">-</button>
-            
-            <button class="function-btn">(</button>
-            <button class="function-btn">)</button>
-            <button class="function-btn">ANS</button>
-            <button class="operator-btn">+</button>
-            
-            <button class="function-btn">RAD</button>
-            <button>7</button>
-            <button>8</button>
-            <button>9</button>
-            
-            <button class="function-btn">DEG</button>
-            <button>4</button>
-            <button>5</button>
-            <button>6</button>
-            
-            <button class="function-btn">AC</button>
-            <button>1</button>
-            <button>2</button>
-            <button>3</button>
-            
-            <button class="function-btn">DEL</button>
-            <button>0</button>
-            <button>.</button>
-            <button class="equals-btn">=</button>
+        
+        <!-- Overlay pour effet verre liquide -->
+        <div class="fixed inset-0 bg-gradient-to-br from-blue-500/20 via-purple-500/20 to-pink-500/20 z-1"></div>
+        
+        <div class="relative z-10 w-full max-w-md mx-auto">
+            <div class="backdrop-blur-2xl bg-gradient-to-br from-white/5 to-white/10 rounded-[2.5rem] p-8 shadow-2xl border border-white/10" style="backdrop-filter: saturate(150%);">
+                
+                <!-- En-tête -->
+                <div class="flex justify-between items-center mb-6">
+                    <h1 class="text-white text-2xl font-light tracking-wide">Calculatrice</h1>
+                    <div class="flex gap-3">
+                        <button id="advanced-mode-btn" class="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 active:bg-white/15 active:scale-95 transition-all duration-300 ease-out text-white font-medium text-sm shadow-2xl flex items-center justify-center hover:border-white/20 px-4 py-2">
+                            Avancé
+                        </button>
+                        <button id="history-btn" class="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 active:bg-white/15 active:scale-95 transition-all duration-300 ease-out text-white font-medium text-sm shadow-2xl flex items-center justify-center hover:border-white/20 px-4 py-2">
+                            📜
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Historique -->
+                <div id="history-panel" class="mb-6 backdrop-blur-2xl bg-white/5 rounded-3xl p-4 border border-white/10 max-h-32 overflow-y-auto hidden">
+                    <div id="history-content" class="text-white text-sm space-y-1">
+                        <div class="text-white/50">Aucun historique</div>
+                    </div>
+                </div>
+
+                <!-- Affichage -->
+                <div class="backdrop-blur-2xl bg-white/5 rounded-3xl p-6 mb-6 border border-white/10">
+                    <div id="display" class="text-right text-white text-4xl font-light tracking-wider break-all">0</div>
+                    <div id="memory-indicator" class="text-right text-white/50 text-sm mt-2 hidden">M: 0</div>
+                </div>
+
+                <!-- Boutons avancés -->
+                <div id="advanced-buttons" class="grid grid-cols-5 gap-3 mb-6 hidden">
+                    <button class="calc-btn h-14 text-sm rounded-2xl" data-action="advanced" data-value="sin">sin</button>
+                    <button class="calc-btn h-14 text-sm rounded-2xl" data-action="advanced" data-value="cos">cos</button>
+                    <button class="calc-btn h-14 text-sm rounded-2xl" data-action="advanced" data-value="tan">tan</button>
+                    <button class="calc-btn h-14 text-sm rounded-2xl" data-action="advanced" data-value="log">log</button>
+                    <button class="calc-btn h-14 text-sm rounded-2xl" data-action="advanced" data-value="ln">ln</button>
+                    <button class="calc-btn h-14 text-sm rounded-2xl" data-action="advanced" data-value="sqrt">√x</button>
+                    <button class="calc-btn h-14 text-sm rounded-2xl" data-action="advanced" data-value="x²">x²</button>
+                    <button class="calc-btn h-14 text-sm rounded-2xl" data-action="advanced" data-value="x³">x³</button>
+                    <button class="calc-btn h-14 text-sm rounded-2xl" data-action="advanced" data-value="1/x">1/x</button>
+                    <button class="calc-btn h-14 text-sm rounded-2xl" data-action="advanced" data-value="!">x!</button>
+                    <button class="calc-btn h-14 text-sm rounded-2xl" data-action="advanced" data-value="π">π</button>
+                    <button class="calc-btn h-14 text-sm rounded-2xl" data-action="advanced" data-value="e">e</button>
+                    <button class="calc-btn h-14 text-sm rounded-2xl" data-action="memory" data-value="M+">M+</button>
+                    <button class="calc-btn h-14 text-sm rounded-2xl" data-action="memory" data-value="M-">M-</button>
+                    <button class="calc-btn h-14 text-sm rounded-2xl" data-action="memory" data-value="MR">MR</button>
+                </div>
+
+                <!-- Boutons principaux -->
+                <div class="grid grid-cols-4 gap-4">
+                    <button class="calc-btn h-16 bg-red-500/10 hover:bg-red-500/20 border-red-300/20 rounded-3xl" data-action="clear" data-value="C">C</button>
+                    <button class="calc-btn h-16 bg-orange-500/10 hover:bg-orange-500/20 border-orange-300/20 rounded-3xl" data-action="clear-entry" data-value="CE">CE</button>
+                    <button class="calc-btn h-16 rounded-3xl" data-action="percentage" data-value="%">%</button>
+                    <button class="calc-btn h-16 bg-blue-500/10 hover:bg-blue-500/20 border-blue-300/20 rounded-3xl" data-action="operation" data-value="÷">÷</button>
+
+                    <button class="calc-btn h-16 rounded-3xl" data-action="number" data-value="7">7</button>
+                    <button class="calc-btn h-16 rounded-3xl" data-action="number" data-value="8">8</button>
+                    <button class="calc-btn h-16 rounded-3xl" data-action="number" data-value="9">9</button>
+                    <button class="calc-btn h-16 bg-blue-500/10 hover:bg-blue-500/20 border-blue-300/20 rounded-3xl" data-action="operation" data-value="×">×</button>
+
+                    <button class="calc-btn h-16 rounded-3xl" data-action="number" data-value="4">4</button>
+                    <button class="calc-btn h-16 rounded-3xl" data-action="number" data-value="5">5</button>
+                    <button class="calc-btn h-16 rounded-3xl" data-action="number" data-value="6">6</button>
+                    <button class="calc-btn h-16 bg-blue-500/10 hover:bg-blue-500/20 border-blue-300/20 rounded-3xl" data-action="operation" data-value="-">-</button>
+
+                    <button class="calc-btn h-16 rounded-3xl" data-action="number" data-value="1">1</button>
+                    <button class="calc-btn h-16 rounded-3xl" data-action="number" data-value="2">2</button>
+                    <button class="calc-btn h-16 rounded-3xl" data-action="number" data-value="3">3</button>
+                    <button class="calc-btn h-16 bg-blue-500/10 hover:bg-blue-500/20 border-blue-300/20 rounded-3xl row-span-2" data-action="operation" data-value="+">+</button>
+
+                    <button class="calc-btn h-16 rounded-3xl" data-action="toggle-sign" data-value="±">±</button>
+                    <button class="calc-btn h-16 rounded-3xl" data-action="number" data-value="0">0</button>
+                    <button class="calc-btn h-16 rounded-3xl" data-action="decimal" data-value=".">.</button>
+
+                    <button class="calc-btn h-16 bg-green-500/10 hover:bg-green-500/20 border-green-300/20 rounded-3xl" data-action="operation" data-value="=">=</button>
+                </div>
+
+                <!-- Mémoire (mode simple) -->
+                <div id="simple-memory" class="flex gap-3 mt-6 hidden">
+                    <button class="calc-btn flex-1 h-12 text-sm rounded-2xl" data-action="memory" data-value="M+">M+</button>
+                    <button class="calc-btn flex-1 h-12 text-sm rounded-2xl" data-action="memory" data-value="M-">M-</button>
+                    <button class="calc-btn flex-1 h-12 text-sm rounded-2xl" data-action="memory" data-value="MR">MR</button>
+                    <button class="calc-btn flex-1 h-12 text-sm rounded-2xl" data-action="memory" data-value="MC">MC</button>
+                </div>
+            </div>
+
+            <!-- Indicateurs de raccourcis clavier -->
+            <div class="mt-6 text-center text-white/50 text-sm font-light">
+                Utilisez votre clavier : 0-9, +, -, *, /, Enter (=), Escape (C), Backspace
+            </div>
         </div>
     </div>
-    <script type="module" src="script.js"></script>
-    <script>
-      window.addEventListener("load", function () {
-        console.log(
-          "Page loaded.",
-        );
-      });
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
